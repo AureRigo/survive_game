@@ -1,11 +1,9 @@
 let posX =40;
 let posY =40;
 
-let x =100;
-let y =0;
+
 
 let a = 50;
-let b = 20;
 
 let lost = false;
 
@@ -64,18 +62,23 @@ class virus{
     constructor(){
         this.xStep = 0;
         this.yStep = 0;
+        this.x =100;
+        this.y =0;
+        this.b = 20;
+        this.viruses = []
+        
     }
 
     afficher(){
         fill("red");
-        ellipse(x, y, b, b);
+        ellipse(this.x, this.y, this.b, this.b);
         fill("red");
     }
 
     move(){
 
-        this.posObstacleX = noise(xStep);
-        this.posObstacleY = noise(yStep);
+        this.posObstacleX = noise(this.xStep);
+        this.posObstacleY = noise(this.yStep);
         this.xStep += 0.01;
         this.yStep += 0.005
         
@@ -91,12 +94,12 @@ class virus{
             this.posObstacleY = 0;
         }
     }
-}
 
-function collisionTest(){ 
-    let d = dist(posX, posY, x, y) 
-    if(d<= (a/2)+(b/2)){
-        lost = true;
+    collisionTest(){ 
+        this.d = dist(posX, posY, this.x, this.y) 
+        if(this.d<= (a/2)+(this.b/2)){
+            lost = true;
+        }
     }
 }
 
@@ -117,8 +120,8 @@ function game(){
     line(0,640, 640,640);
     line(0,0, 0,640);
     line(640,0, 640,640);
-    virus.afficher();
-    virus.move();
-    collisionTest();
+    deases.afficher();
+    deases.move();
+    deases.collisionTest();
     time();
 }
