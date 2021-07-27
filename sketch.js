@@ -6,12 +6,11 @@ let posY =40;
 let a = 50;
 
 let lost = false;
-
-let deases
+let viruses = [];
 
 function setup(){
     createCanvas(640,640);
-    deases = new virus();
+    multiplication();
 
 }
 
@@ -22,6 +21,26 @@ function draw(){
         textSize(50);
         text("T'es mort", 200, 200)
     }
+}
+
+function game(){
+    background('rgba(0,255,0, 0.25)');
+    updatePositionCercle();
+    testOutOfScreen();
+    fill("white");
+    circle(posX, posY, a);
+    fill("white");
+    line(0,0, 640,0);
+    line(0,640, 640,640);
+    line(0,0, 0,640);
+    line(640,0, 640,640);
+    viruses.forEach(deases => {deases.afficher()});
+    viruses.forEach(deases => {deases.move()});
+    viruses.forEach(deases => {deases.collisionTest()});
+    // deases.afficher();
+    // deases.move();
+    // deases.collisionTest();
+    time();
 }
 
 function updatePositionCercle(){
@@ -60,68 +79,48 @@ function testOutOfScreen(){
 
 class virus{
     constructor(){
-        this.xStep = 0;
-        this.yStep = 0;
-        this.x =100;
-        this.y =0;
-        this.b = 20;
-        this.viruses = []
+        // Utilisé pour calculer le bruit de Perlin
+        this.xStep = random(0, 1000);
+        this.yStep = random(0, 1000);
         
+        // Positions
+        this.posObstacleX = noise(this.xStep);
+        this.posObstacleY = noise(this.yStep);
+
+        this.b = 20;
     }
 
     afficher(){
         fill("red");
-        ellipse(this.x, this.y, this.b, this.b);
+        ellipse(this.posObstacleX, this.posObstacleY, this.b, this.b);
         fill("red");
     }
 
     move(){
-
-        this.posObstacleX = noise(this.xStep);
-        this.posObstacleY = noise(this.yStep);
         this.xStep += 0.01;
-        this.yStep += 0.005
-        
-        this.x = map(this.posObstacleX, 0, 1, 0, width);
-        this.y = map(this.posObstacleY, 0, 1, 0, width);
-        if (this.posObstacleX <0){
-            this.posObstacleX = 0;
-        }
-        if(this.posObstacleY >640){
-            this.posObstacleY = 640;
-        }dist(posX, posY, this.posObstacleX, this.posObstacleY)
-        if (this.posObstacleY <0){
-            this.posObstacleY = 0;
-        }
+        this.yStep += 0.005;
+        this.posObstacleX = noise(this.xStep) * width;
+        this.posObstacleY = noise(this.yStep) * height;
     }
 
     collisionTest(){ 
-        this.d = dist(posX, posY, this.x, this.y) 
+        this.d = dist(posX, posY, this.posObstacleX, this.posObstacleY) 
         if(this.d<= (a/2)+(this.b/2)){
             lost = true;
         }
     }
 }
-
+function multiplication(){
+    viruses = [];
+    for(let i=0; i<1000; i++){
+        let posX_initiale = random(20, 620);
+        let posY_initiale = random(20, 620);
+        let deases = new virus(posX_initiale, posY_initiale);
+        viruses.push(deases);
+    }
+}
 function time(){
     let millisecond = millis();
     let t = round(millisecond/1000);
     text('Secondes \nrunning: \n' + t, 5, 40);
-}
-
-function game(){
-    background('rgba(0,255,0, 0.25)');
-    updatePositionCercle();
-    testOutOfScreen();
-    fill("white");
-    circle(posX, posY, a);
-    fill("white");
-    line(0,0, 640,0);
-    line(0,640, 640,640);
-    line(0,0, 0,640);
-    line(640,0, 640,640);
-    deases.afficher();
-    deases.move();
-    deases.collisionTest();
-    time();
 }
