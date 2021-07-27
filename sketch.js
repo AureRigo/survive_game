@@ -4,30 +4,26 @@ let posY =40;
 let x =100;
 let y =0;
 
-let xStep = 0;
-let yStep = 0; 
+let a = 50;
+let b = 20;
 
-let vivant = true
+let lost = false;
+
+let deases
 
 function setup(){
     createCanvas(640,640);
+    deases = new virus();
+
 }
 
 function draw(){
-    background('rgba(0,255,0, 0.25)');
-    updatePositionCercle();
-    testOutOfScreen();
-    fill("white");
-    circle(posX, posY, 50);
-    fill("white");
-    line(0,0, 640,0);
-    line(0,640, 640,640);
-    line(0,0, 0,640);
-    line(640,0, 640,640);
-    virus();
-    collisionTest();
-    time();
-    stop();
+    if (!lost){
+        game();
+    } else {
+        textSize(50);
+        text("T'es mort", 200, 200)
+    }
 }
 
 function updatePositionCercle(){
@@ -64,42 +60,65 @@ function testOutOfScreen(){
     }
 }
 
-function virus(){
-    let posObstacleX = noise(xStep);
-    let posObstacleY = noise(yStep);
-    x = map(posObstacleX, 0, 1, 0, width);
-    y = map(posObstacleY, 0, 1, 0, width);
-    fill("red");
-    ellipse(x, y, 20, 20);
-    fill("red");
-    xStep += 0.01;
-    yStep += 0.005;
-
-    // posObstacleY = posObstacleY + noise(-speedY, speedY);
-    if (posObstacleX <0){
-        posObstacleX = 0;
+class virus{
+    constructor(){
+        this.xStep = 0;
+        this.yStep = 0;
     }
-    if(posObstacleY >640){
-        posObstacleY = 640;
-    }dist(posX, posY, posObstacleX, posObstacleY)
-    if (posObstacleY <0){
-        posObstacleY = 0;
+
+    afficher(){
+        fill("red");
+        ellipse(x, y, b, b);
+        fill("red");
+    }
+
+    move(){
+
+        this.posObstacleX = noise(xStep);
+        this.posObstacleY = noise(yStep);
+        this.xStep += 0.01;
+        this.yStep += 0.005
+        
+        this.x = map(this.posObstacleX, 0, 1, 0, width);
+        this.y = map(this.posObstacleY, 0, 1, 0, width);
+        if (this.posObstacleX <0){
+            this.posObstacleX = 0;
+        }
+        if(this.posObstacleY >640){
+            this.posObstacleY = 640;
+        }dist(posX, posY, this.posObstacleX, this.posObstacleY)
+        if (this.posObstacleY <0){
+            this.posObstacleY = 0;
+        }
     }
 }
 
 function collisionTest(){ 
     let d = dist(posX, posY, x, y) 
-    if(d<= 15){
-        fill("red");
-        return true;
+    if(d<= (a/2)+(b/2)){
+        lost = true;
     }
 }
 
 function time(){
     let millisecond = millis();
-    text('Milliseconds \nrunning: \n' + millisecond, 5, 40);
+    let t = round(millisecond/1000);
+    text('Secondes \nrunning: \n' + t, 5, 40);
 }
 
-function stop(){
-    round();
+function game(){
+    background('rgba(0,255,0, 0.25)');
+    updatePositionCercle();
+    testOutOfScreen();
+    fill("white");
+    circle(posX, posY, a);
+    fill("white");
+    line(0,0, 640,0);
+    line(0,640, 640,640);
+    line(0,0, 0,640);
+    line(640,0, 640,640);
+    virus.afficher();
+    virus.move();
+    collisionTest();
+    time();
 }
