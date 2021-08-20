@@ -1,3 +1,5 @@
+let socket
+
 let posX =40;
 let posY =40;
 
@@ -11,7 +13,7 @@ let viruses = [];
 function setup(){
     createCanvas(640,640);
     multiplication();
-
+    socket = socket.io.connect('http://localhost:3000')
 }
 
 function draw(){
